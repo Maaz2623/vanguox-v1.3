@@ -1,10 +1,12 @@
+import { ChatView } from '@/modules/chat/views/chat-view'
 import React from 'react'
 
 const HomePage = () => {
 
   return (
-    <div>HomePage</div>
+    <ChatView />
   )
 }
 
 export default HomePage 
+
