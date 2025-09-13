@@ -13,8 +13,23 @@ import { AiModelsComboBox } from "./ai-models-combo-box";
 import { models } from "@/constants";
 import { useHydratedModel, useModelStore } from "@/hooks/ai-model-store";
 import { Skeleton } from "../ui/skeleton";
+import { useSharedChatContext } from "@/modules/chat/components/chat-provider";
+import { useChatStore } from "@/hooks/chat-store";
+import { useChatIdStore } from "@/hooks/chat-id-store";
 
 export function PromptInputWithActions() {
+  const { clearChat, sendMessage, status, stop } = useSharedChatContext();
+
+  const {
+    setPendingMessage,
+    setPendingFile,
+    fileUrl,
+    setFileUrl,
+    pendingMessage,
+  } = useChatStore();
+
+  const { chatId } = useChatIdStore();
+
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -25,11 +40,14 @@ export function PromptInputWithActions() {
   const handleSubmit = () => {
     if (input.trim() || files.length > 0) {
       setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        setInput("");
-        setFiles([]);
-      }, 2000);
+      sendMessage(
+        {
+          role: "user",
+          parts: [{ type: "text", text: input }],
+        },
+        { body: { model: model.id, chatId: chatId } }
+      );
+      setInput("");
     }
   };
 
@@ -120,7 +138,7 @@ export function PromptInputWithActions() {
             className="h-8 w-8 rounded-full"
             onClick={handleSubmit}
           >
-            {isLoading ? (
+            {status === "streaming" || status === "submitted" ? (
               <Square className="size-5 fill-current" />
             ) : (
               <ArrowUp className="size-5" />
