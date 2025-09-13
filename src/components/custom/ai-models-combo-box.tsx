@@ -50,10 +50,10 @@ export function AiModelsComboBox({
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full sm:w-fit justify-between max-w-[90vw] sm:max-w-none"
         >
           {selectedModel ? (
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 truncate">
               <Image
                 src={selectedModel.icon}
                 alt={selectedModel.name}
@@ -61,7 +61,7 @@ export function AiModelsComboBox({
                 height={20}
                 className="rounded-full"
               />
-              {selectedModel.name}
+              <span className="truncate">{selectedModel.name}</span>
             </div>
           ) : (
             "Select model..."
@@ -70,12 +70,12 @@ export function AiModelsComboBox({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[250px] p-0">
+      <PopoverContent className="w-[90vw] sm:w-[300px] p-0">
         <Command>
-          <CommandInput placeholder="Search model..." />
+          <CommandInput placeholder="Search model..." className="text-sm" />
 
           {/* ✅ Scrollable grouped list */}
-          <ScrollArea className="max-h-[300px]">
+          <ScrollArea className="max-h-[50vh] sm:max-h-[300px]">
             <CommandList>
               <CommandEmpty>No model found.</CommandEmpty>
 
@@ -91,7 +91,7 @@ export function AiModelsComboBox({
                           setOpen(false);
                         }}
                       >
-                        <div className="flex items-center gap-x-2">
+                        <div className="flex items-center gap-x-2 truncate">
                           <Image
                             src={model.icon}
                             alt={model.name}
@@ -99,7 +99,7 @@ export function AiModelsComboBox({
                             height={20}
                             className="rounded-full"
                           />
-                          <span>{model.name}</span>
+                          <span className="truncate">{model.name}</span>
                         </div>
                         {model.id === value && (
                           <Check className="ml-auto h-4 w-4 opacity-100" />

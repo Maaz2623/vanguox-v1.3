@@ -76,7 +76,10 @@ export function PromptInputWithActions() {
         </div>
       )}
 
-      <PromptInputTextarea placeholder="Ask me anything..." />
+      <PromptInputTextarea
+        placeholder="Ask me anything..."
+        className="bg-transparent!"
+      />
 
       <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
         <div className="flex gap-x-1">
