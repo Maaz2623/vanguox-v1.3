@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect } from "react";
 import { useChatIdStore } from "@/hooks/chat-id-store";
+import { ChatInput } from "@/components/custom/chat-input";
 
 interface Props {
   chatId: string;
@@ -24,6 +25,7 @@ export const ChatView = ({ chatId }: Props) => {
     <ScrollArea className="relative h-screen  w-full mx-auto">
       <div className="h-6 bg-gradient-to-b z-50 from-background to-tra w-full absolute top-0 left-0" />
       <MessagesList chatId={chatId} />
+      <ChatInput />
     </ScrollArea>
   );
 };

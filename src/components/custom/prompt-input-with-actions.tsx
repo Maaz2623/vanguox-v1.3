@@ -28,11 +28,11 @@ export function PromptInputWithActions({ input, setInput }: Props) {
   const pathname = usePathname();
   const { clearChat, sendMessage, status, stop } = useSharedChatContext();
   const { setPendingMessage } = useChatStore();
-  const { chatId } = useChatIdStore();
+  const { chatId, setChatId } = useChatIdStore();
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const {pendingFiles, setPendingFiles} = useChatStore()
+  const { pendingFiles, setPendingFiles } = useChatStore();
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const { setModel: setAiModel, model, hydrated } = useHydratedModel();
@@ -40,10 +40,12 @@ export function PromptInputWithActions({ input, setInput }: Props) {
   const handleSubmit = async () => {
     if (input.trim() || pendingFiles.length > 0) {
       if (pathname === "/") {
-        const chat = await createChat();
-        setPendingMessage(input);
-        router.push(`/chats/${chat.id}`);
-        setInput("");
+        const chat = await createChat().then((data) => {
+          setChatId(data.id);
+          setPendingMessage(input);
+          router.push(`/chats/${data.id}`);
+          setInput("");
+        });
       } else {
         sendMessage(
           {

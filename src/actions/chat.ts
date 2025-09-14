@@ -5,7 +5,7 @@ import { chatsTable } from "@/db/schema";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
-const getAuth = async () => {
+export const getAuth = async () => {
   const authData = await auth.api.getSession({
     headers: await headers(),
   });

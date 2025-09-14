@@ -2,7 +2,6 @@ import { Action } from "@/components/ai-elements/actions";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
@@ -21,12 +20,7 @@ import { cn, sanitizeText } from "@/lib/utils";
 import { useSharedChatContext } from "@/modules/chat/components/chat-provider";
 import { useChat } from "@ai-sdk/react";
 import { UIMessage } from "ai";
-import {
-  CheckIcon,
-  CopyIcon,
-  MessageSquare,
-  RefreshCcwIcon,
-} from "lucide-react";
+import { CheckIcon, CopyIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -49,7 +43,7 @@ export const MessagesList = ({ chatId }: Props) => {
   } = useChatStore();
 
   const { messages, sendMessage, regenerate, status, setMessages } =
-    useSharedChatContext();
+    useChat();
 
   const sentRef = useRef(false);
 

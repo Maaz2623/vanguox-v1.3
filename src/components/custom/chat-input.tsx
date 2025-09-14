@@ -41,7 +41,7 @@ export const ChatInput = () => {
     <div
       className={cn(
         "absolute left-0 w-full flex bg-gradient-to-b pt-10 via-background/50 from-transparent to-background pb-2 flex-col items-center transition-all duration-300 px-2",
-        pathname === "/" ? "bottom-40" : "bottom-0"
+        pathname === "/" ? "bottom-40 bg-transparent" : "bottom-0"
       )}
     >
       {pathname === "/" && pendingFiles.length === 0 && (
