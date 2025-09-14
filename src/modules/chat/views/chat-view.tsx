@@ -1,7 +1,9 @@
 "use client";
-import { ThemeTogglerButton } from "@/components/animate-ui/components/buttons/theme-toggler";
+import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
 import { MessagesList } from "@/modules/messages/ui/components/messages-list";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const ChatView = () => {
   return (
@@ -13,9 +15,10 @@ export const ChatView = () => {
 
 const MainChat = () => {
   return (
-    <div className="relative h-screen  w-full mx-auto">
-      <div className="h-12 top-0 absolute left-0 w-full">
-        {/* <ThemeTogglerButton /> */}
+    <ScrollArea className="relative h-screen  w-full mx-auto">
+      <div className="h-12 top-0 bg-gradient-to-b via-background/70 from-background to-transparent absolute px-3 left-0 w-full z-100 flex justify-between items-center">
+        <div />
+        <AnimatedThemeToggler />
       </div>
       <div className="h-6 bg-gradient-to-b z-50 from-background to-tra w-full absolute top-0 left-0" />
       <MessagesList />
@@ -25,6 +28,6 @@ const MainChat = () => {
           <PromptInputWithActions />
         </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 };

@@ -120,3 +120,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+/* Works for Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background); /* Track matches background */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary); /* Scroll thumb follows primary */
+  border-radius: 10px;
+  border: 2px solid var(--background); /* adds spacing effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-foreground); /* On hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-foreground) var(--background);
+}

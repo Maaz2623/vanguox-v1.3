@@ -268,7 +268,7 @@ export const MessagesList = () => {
               {status === "submitted" && <Loader className="ml-5 mt-5" />}
             </div>
           </ConversationContent>
-          <ConversationScrollButton className="z-100 mb-26" />
+          <ConversationScrollButton className="z-100 mb-26 bg-background!" />
         </Conversation>
       </div>
     </div>
