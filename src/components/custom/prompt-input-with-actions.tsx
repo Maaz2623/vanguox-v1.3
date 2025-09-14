@@ -32,17 +32,26 @@ export function PromptInputWithActions({ input, setInput }: Props) {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const {pendingFiles, setPendingFiles} = useChatStore()
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const { setModel: setAiModel, model, hydrated } = useHydratedModel();
 
   const handleSubmit = async () => {
-    if (input.trim() || files.length > 0) {
+    if (input.trim() || pendingFiles.length > 0) {
       if (pathname === "/") {
         const chat = await createChat();
         setPendingMessage(input);
         router.push(`/chats/${chat.id}`);
+        setInput("");
+      } else {
+        sendMessage(
+          {
+            role: "user",
+            parts: [{ type: "text", text: input }],
+          },
+          { body: { model: model.id, chatId: chatId } }
+        );
         setInput("");
       }
     }
@@ -51,12 +60,12 @@ export function PromptInputWithActions({ input, setInput }: Props) {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
-      setFiles((prev) => [...prev, ...newFiles]);
+      setPendingFiles((prev) => [...prev, ...newFiles]);
     }
   };
 
   const handleRemoveFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setPendingFiles((prev) => prev.filter((_, i) => i !== index));
     if (uploadInputRef?.current) {
       uploadInputRef.current.value = "";
     }
@@ -70,9 +79,9 @@ export function PromptInputWithActions({ input, setInput }: Props) {
       onSubmit={handleSubmit}
       className="w-full max-w-(--breakpoint-md)"
     >
-      {files.length > 0 && (
+      {pendingFiles.length > 0 && (
         <div className="flex flex-wrap gap-2 pb-2">
-          {files.map((file, index) => (
+          {pendingFiles.map((file, index) => (
             <div
               key={index}
               className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm"

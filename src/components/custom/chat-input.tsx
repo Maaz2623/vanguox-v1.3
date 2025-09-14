@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useState } from "react";
+import { useChatStore } from "@/hooks/chat-store";
 
 const suggestionsList = [
   "Summarize this article for me.",
@@ -34,6 +35,8 @@ export const ChatInput = () => {
   const pathname = usePathname();
   const [input, setInput] = useState("");
 
+  const { pendingFiles } = useChatStore();
+
   return (
     <div
       className={cn(
@@ -41,7 +44,7 @@ export const ChatInput = () => {
         pathname === "/" ? "bottom-40" : "bottom-0"
       )}
     >
-      {pathname === "/" && (
+      {pathname === "/" && pendingFiles.length === 0 && (
         <ScrollArea className="w-full sm:w-4/5 md:w-2/3 lg:w-1/2 mb-7">
           <Suggestions className="flex gap-2 overflow-x-auto px-2">
             {suggestionsList.map((s, i) => (

@@ -30,18 +30,20 @@ import {
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-export const MessagesList = () => {
+interface Props {
+  chatId: string;
+}
+
+export const MessagesList = ({ chatId }: Props) => {
   const { chatId: storeChatId, setChatId } = useChatIdStore();
 
   const previousMessages: UIMessage[] = [];
 
-  const chatId = "123";
-
   const {
     pendingMessage,
     setPendingMessage,
-    pendingFile,
-    setPendingFile,
+    pendingFiles,
+    setPendingFiles,
     fileUrl,
     setFileUrl,
   } = useChatStore();
@@ -81,7 +83,7 @@ export const MessagesList = () => {
         );
 
         setPendingMessage(null);
-        setPendingFile(null);
+        setPendingFiles([]);
         setFileUrl(null);
       };
 
@@ -89,10 +91,10 @@ export const MessagesList = () => {
     }
   }, [
     pendingMessage,
-    pendingFile,
+    pendingFiles,
     sendMessage,
     setPendingMessage,
-    setPendingFile,
+    setPendingFiles,
     model.id,
     chatId,
   ]);
