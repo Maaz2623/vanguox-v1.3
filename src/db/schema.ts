@@ -21,26 +21,23 @@ export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified")
-    .$defaultFn(() => false)
-    .notNull(),
+  emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  totalTokensUsed: integer("total_tokens_used").default(0).notNull(),
-  maxTokens: integer("max_tokens").default(50000).notNull(),
 });
 
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
   expiresAt: timestamp("expires_at").notNull(),
   token: text("token").notNull().unique(),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
   userId: text("user_id")
@@ -62,8 +59,10 @@ export const account = pgTable("account", {
   refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
   scope: text("scope"),
   password: text("password"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });
 
 export const verification = pgTable("verification", {
@@ -71,6 +70,18 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const messagesTable = pgTable("messages", {
+  id: text("id").primaryKey(),
+  modelId: text("model_id").notNull(),
+  message: jsonb("message").$type<UIMessage>().notNull(),
+  chatId: text("chat_id").notNull(),
   createdAt: timestamp("created_at").$defaultFn(
     () => /* @__PURE__ */ new Date()
   ),
@@ -79,11 +90,12 @@ export const verification = pgTable("verification", {
   ),
 });
 
-export const messagesTable = pgTable("messages", {
-  id: text("id").primaryKey(),
-  modelId: text("model_id").notNull(),
-  message: jsonb("message").$type<UIMessage>().notNull(),
-  chatId: text("chat_id").notNull(),
+export const chatsTable = pgTable("chatsTable", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  title: text("title").notNull().default("Untitled"),
+  userId: text("user_id")
+    .references(() => user.id)
+    .notNull(),
   createdAt: timestamp("created_at").$defaultFn(
     () => /* @__PURE__ */ new Date()
   ),

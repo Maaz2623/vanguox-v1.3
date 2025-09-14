@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     //   webSearcher,
     //   imageGenerator: imageGenerator(model),
     //   getInformation,
-    //   addResource, 
+    //   addResource,
     // },
   });
 

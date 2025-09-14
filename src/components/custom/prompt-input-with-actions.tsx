@@ -16,38 +16,35 @@ import { Skeleton } from "../ui/skeleton";
 import { useSharedChatContext } from "@/modules/chat/components/chat-provider";
 import { useChatStore } from "@/hooks/chat-store";
 import { useChatIdStore } from "@/hooks/chat-id-store";
+import { usePathname, useRouter } from "next/navigation";
+import { createChat } from "@/actions/chat";
 
-export function PromptInputWithActions() {
+interface Props {
+  input: string;
+  setInput: (val: string) => void;
+}
+
+export function PromptInputWithActions({ input, setInput }: Props) {
+  const pathname = usePathname();
   const { clearChat, sendMessage, status, stop } = useSharedChatContext();
-
-  const {
-    setPendingMessage,
-    setPendingFile,
-    fileUrl,
-    setFileUrl,
-    pendingMessage,
-  } = useChatStore();
-
+  const { setPendingMessage } = useChatStore();
   const { chatId } = useChatIdStore();
+  const router = useRouter();
 
-  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const { setModel: setAiModel, model, hydrated } = useHydratedModel();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (input.trim() || files.length > 0) {
-      setIsLoading(true);
-      sendMessage(
-        {
-          role: "user",
-          parts: [{ type: "text", text: input }],
-        },
-        { body: { model: model.id, chatId: chatId } }
-      );
-      setInput("");
+      if (pathname === "/") {
+        const chat = await createChat();
+        setPendingMessage(input);
+        router.push(`/chats/${chat.id}`);
+        setInput("");
+      }
     }
   };
 
@@ -95,6 +92,7 @@ export function PromptInputWithActions() {
       )}
 
       <PromptInputTextarea
+        autoFocus
         placeholder="Ask me anything..."
         className="bg-transparent!"
       />

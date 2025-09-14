@@ -135,7 +135,7 @@ export const MessagesList = () => {
       <div className="flex flex-col h-screen overflow-hidden">
         <Conversation className="max-h-screen  overflow-hidden  w-full">
           <ConversationContent
-            className={cn("w-[58%] mx-auto", isMobile && "w-full")}
+            className={cn("w-[60%] mx-auto", isMobile && "w-full")}
           >
             <div className="h-full pb-[40vh] z-50">
               {messages.map((message) => (
