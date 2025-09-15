@@ -1,5 +1,3 @@
-import { auth } from "@/lib/auth/auth";
-import { systemPrompt } from "@/prompt";
 import {
   convertToModelMessages,
   createIdGenerator,
@@ -7,9 +5,13 @@ import {
   streamText,
 } from "ai";
 import { headers } from "next/headers";
+import { auth } from "@/lib/auth/auth";
+import { systemPrompt } from "@/prompt";
 
 export async function POST(req: Request) {
   const { messages, model, chatId } = await req.json();
+
+  console.log(chatId);
 
   const authData = await auth.api.getSession({
     headers: await headers(),

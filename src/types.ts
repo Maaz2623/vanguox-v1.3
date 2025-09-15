@@ -1,5 +1,3 @@
-import { StreamTextResult } from "ai";
-
 export type Model = {
   id: // Anthropic
   | "anthropic/claude-sonnet-4"

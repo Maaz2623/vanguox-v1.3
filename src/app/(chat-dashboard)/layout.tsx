@@ -1,10 +1,9 @@
-import { ChatProvider } from "@/modules/chat/components/chat-provider";
-import { HexagonBackground } from "@/components/animate-ui/components/backgrounds/hexagon";
-import { TopBar } from "@/components/custom/top-bar";
-import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { HexagonBackground } from "@/components/animate-ui/components/backgrounds/hexagon";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth/auth";
+import { ChatProvider } from "@/modules/chat/components/chat-provider";
 import { ChatViewSidebar } from "@/modules/chat/components/sidebar/chat-view-sidebar";
 
 export default async function ChatDashboardLayout({

@@ -30,12 +30,6 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
-import {
-  RippleButton,
-  RippleButtonRipples,
-} from "@/components/animate-ui/components/buttons/ripple";
 
 export function ChatViewNavMain({ userId }: { userId: string }) {
   const router = useRouter();
