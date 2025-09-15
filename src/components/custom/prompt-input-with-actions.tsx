@@ -47,7 +47,7 @@ export function PromptInputWithActions({
   const handleSubmit = async () => {
     if (input.trim() || pendingFiles.length > 0) {
       if (pathname === "/") {
-        const chat = await createChat().then((data) => {
+        await createChat().then((data) => {
           setChatId(data.id);
           setPendingMessage(input);
           router.push(`/chats/${data.id}`);
