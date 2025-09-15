@@ -7,6 +7,7 @@ import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useState } from "react";
 import { useChatStore } from "@/hooks/chat-store";
+import { useChat } from "@ai-sdk/react";
 
 const suggestionsList = [
   "Summarize this article for me.",
@@ -37,6 +38,8 @@ export const ChatInput = () => {
 
   const { pendingFiles } = useChatStore();
 
+  const { sendMessage, status } = useChat();
+
   return (
     <div
       className={cn(
@@ -61,7 +64,12 @@ export const ChatInput = () => {
       )}
 
       <div className="w-full flex justify-center items-center">
-        <PromptInputWithActions input={input} setInput={setInput} />
+        <PromptInputWithActions
+          sendMessage={sendMessage}
+          status={status}
+          input={input}
+          setInput={setInput}
+        />
       </div>
     </div>
   );

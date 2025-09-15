@@ -18,15 +18,22 @@ import { useChatStore } from "@/hooks/chat-store";
 import { useChatIdStore } from "@/hooks/chat-id-store";
 import { usePathname, useRouter } from "next/navigation";
 import { createChat } from "@/actions/chat";
+import { useChat } from "@ai-sdk/react";
 
 interface Props {
   input: string;
   setInput: (val: string) => void;
+  sendMessage: ReturnType<typeof useChat>["sendMessage"];
+  status: ReturnType<typeof useChat>["status"];
 }
 
-export function PromptInputWithActions({ input, setInput }: Props) {
+export function PromptInputWithActions({
+  input,
+  setInput,
+  status,
+  sendMessage,
+}: Props) {
   const pathname = usePathname();
-  const { clearChat, sendMessage, status, stop } = useSharedChatContext();
   const { setPendingMessage } = useChatStore();
   const { chatId, setChatId } = useChatIdStore();
   const router = useRouter();
@@ -79,7 +86,7 @@ export function PromptInputWithActions({ input, setInput }: Props) {
       onValueChange={setInput}
       isLoading={isLoading}
       onSubmit={handleSubmit}
-      className="w-full max-w-(--breakpoint-md)"
+      className="w-[70%]"
     >
       {pendingFiles.length > 0 && (
         <div className="flex flex-wrap gap-2 pb-2">

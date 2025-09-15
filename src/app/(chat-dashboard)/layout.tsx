@@ -39,7 +39,7 @@ export default async function ChatDashboardLayout({
             image={authData.user.image}
             userId={authData.user.id}
             variant="inset"
-            className=" z-100! border-r"
+            className="border-r"
           />
           {children}
         </SidebarProvider>

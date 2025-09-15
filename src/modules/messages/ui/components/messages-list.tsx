@@ -12,6 +12,8 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
+import { ChatInput } from "@/components/custom/chat-input";
+import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
 import { useModelStore } from "@/hooks/ai-model-store";
 import { useChatIdStore } from "@/hooks/chat-id-store";
 import { useChatStore } from "@/hooks/chat-store";
@@ -22,6 +24,7 @@ import { useChat } from "@ai-sdk/react";
 import { UIMessage } from "ai";
 import { CheckIcon, CopyIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -33,6 +36,8 @@ export const MessagesList = ({ chatId }: Props) => {
 
   const previousMessages: UIMessage[] = [];
 
+  const [input, setInput] = useState("");
+
   const {
     pendingMessage,
     setPendingMessage,
@@ -42,8 +47,7 @@ export const MessagesList = ({ chatId }: Props) => {
     setFileUrl,
   } = useChatStore();
 
-  const { messages, sendMessage, regenerate, status, setMessages } =
-    useChat();
+  const { messages, sendMessage, regenerate, status, setMessages } = useChat();
 
   const sentRef = useRef(false);
 
@@ -93,6 +97,8 @@ export const MessagesList = ({ chatId }: Props) => {
     chatId,
   ]);
 
+  const pathname = usePathname();
+
   const isMobile = useIsMobile();
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -131,7 +137,7 @@ export const MessagesList = ({ chatId }: Props) => {
       <div className="flex flex-col h-screen overflow-hidden">
         <Conversation className="max-h-screen  overflow-hidden  w-full">
           <ConversationContent
-            className={cn("w-[60%] mx-auto", isMobile && "w-full")}
+            className={cn("w-[70%] mx-auto", isMobile && "w-full")}
           >
             <div className="h-full pb-[40vh] z-50">
               {messages.map((message) => (
@@ -266,6 +272,21 @@ export const MessagesList = ({ chatId }: Props) => {
           </ConversationContent>
           <ConversationScrollButton className="z-100 mb-26 bg-background!" />
         </Conversation>
+      </div>
+      <div
+        className={cn(
+          "absolute left-0 w-full flex bg-gradient-to-b pt-10 via-background/50 from-transparent to-background pb-2 flex-col items-center transition-all duration-300 px-2",
+          pathname === "/" ? "bottom-40 bg-transparent" : "bottom-0"
+        )}
+      >
+        <div className="w-full flex justify-center items-center">
+          <PromptInputWithActions
+            sendMessage={sendMessage}
+            status={status}
+            input={input}
+            setInput={setInput}
+          />
+        </div>
       </div>
     </div>
   );

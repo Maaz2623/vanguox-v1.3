@@ -1,14 +1,6 @@
 /* eslint-disable */
 
 "use client";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Drawer,
@@ -31,8 +23,6 @@ import {
 import {
   ImageIcon,
   GlobeIcon,
-  MailIcon,
-  CodeIcon,
   MessageCircleIcon,
   CrownIcon,
 } from "lucide-react";
@@ -40,6 +30,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Script from "next/script";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/animate-ui/components/radix/dialog";
 
 interface Props {
   open: boolean;
