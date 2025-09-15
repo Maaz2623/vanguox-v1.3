@@ -43,7 +43,7 @@ export function ChatViewSwitcher() {
       <SidebarMenuItem>
         <SidebarMenuButton
           size="lg"
-          className="data-[state=open]:bg-sidebar-accent bg-foreground/5 data-[state=open]:text-sidebar-accent-foreground"
+          className="data-[state=open]:bg-sidebar-accent bg-foreground/5 backdrop-blur-sm data-[state=open]:text-sidebar-accent-foreground"
         >
           <div className="flex aspect-square size-10 items-center justify-center rounded-lg">
             <Image

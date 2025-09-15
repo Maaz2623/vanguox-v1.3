@@ -11,9 +11,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronRight, FilesIcon, HistoryIcon } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronRightIcon,
+  FilesIcon,
+  HistoryIcon,
+} from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,6 +30,12 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import {
+  RippleButton,
+  RippleButtonRipples,
+} from "@/components/animate-ui/components/buttons/ripple";
 
 export function ChatViewNavMain({ userId }: { userId: string }) {
   const router = useRouter();
@@ -34,15 +46,19 @@ export function ChatViewNavMain({ userId }: { userId: string }) {
 
   const { data: chats } = useQuery(trpc.chats.getChats.queryOptions());
 
+  const { open } = useSidebar();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
+          <SidebarMenuItem>
             <SidebarMenuButton
+              className={cn(
+                "w-full text-start! flex bg-foreground text-background hover:bg-foreground hover:text-background items-center"
+              )}
+              variant={`outline`}
               onClick={() => router.push(`/`)}
-              tooltip="Quick Create"
-              className="bg-accent transition-colors duration-300 hover:bg-primary/90 active:bg-primary/90 min-w-8 ease-linear"
             >
               <IconCirclePlusFilled />
               <span>New Chat</span>
@@ -52,18 +68,11 @@ export function ChatViewNavMain({ userId }: { userId: string }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
+              className="w-full text-start! flex justify-start items-center"
               onClick={() => router.push(`/files`)}
-              className={cn(
-                "",
-                pathname === "/files" &&
-                  "dark:bg-neutral-800 bg-neutral-200 font-semibold"
-              )}
             >
-              <span>
-                <FilesIcon />
-                Files
-              </span>
+              <FilesIcon />
+              Files
             </SidebarMenuButton>
           </SidebarMenuItem>
           <Collapsible
@@ -73,13 +82,13 @@ export function ChatViewNavMain({ userId }: { userId: string }) {
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={`History`}>
+                <SidebarMenuButton className="w-full text-start! flex justify-between items-center">
                   <HistoryIcon />
-                  <span>History</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  History
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />{" "}
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
+              <CollapsibleContent className="">
                 <ScrollArea className="h-[170px]">
                   <SidebarMenuSub>
                     {chats?.map((item) => {

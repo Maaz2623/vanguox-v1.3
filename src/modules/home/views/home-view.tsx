@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useChatStore } from "@/hooks/chat-store";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
+import { TopBar } from "@/components/custom/top-bar";
 
 export const HomeView = () => {
   const suggestionsList = [
@@ -38,26 +39,16 @@ export const HomeView = () => {
   const { pendingFiles } = useChatStore();
 
   return (
-    <div className="h-screen w-full flex justify-center flex-col items-center gap-y-8">
+    <div className="h-screen w-full relative flex justify-center flex-col items-center gap-y-8">
+      <TopBar />
+
       <Blur className="">
         <h1 className="text-2xl lg:text-4xl font-bold text-center">
           What&apos;s lined up for you today?
         </h1>
       </Blur>
-      <ScrollArea className="w-full sm:w-4/5 md:w-2/3 lg:w-1/2">
-        <Suggestions className="flex gap-2 overflow-x-auto px-2">
-          {suggestionsList.map((s, i) => (
-            <Suggestion
-              key={i}
-              suggestion={s}
-              onClick={() => setInput(s)}
-              className="whitespace-nowrap"
-            />
-          ))}
-        </Suggestions>
-        <ScrollBar orientation="horizontal" className="hidden" />
-      </ScrollArea>
-      <div className="bg-transparent w-full flex justify-center items-center z-100">
+
+      <div className="bg-transparent w-full flex justify-center items-center z-50">
         <PromptInputWithActions input={input} setInput={setInput} />
       </div>
     </div>
