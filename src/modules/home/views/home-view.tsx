@@ -9,6 +9,7 @@ import { useChatStore } from "@/hooks/chat-store";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
 import { TopBar } from "@/components/custom/top-bar";
+import { useChat } from "@ai-sdk/react";
 
 export const HomeView = () => {
   const suggestionsList = [
@@ -36,6 +37,8 @@ export const HomeView = () => {
   const pathname = usePathname();
   const [input, setInput] = useState("");
 
+  const { sendMessage, status } = useChat();
+
   const { pendingFiles } = useChatStore();
 
   return (
@@ -49,7 +52,12 @@ export const HomeView = () => {
       </Blur>
 
       <div className="bg-transparent w-full flex justify-center items-center z-50">
-        <PromptInputWithActions input={input} setInput={setInput} />
+        <PromptInputWithActions
+          sendMessage={sendMessage}
+          status={status}
+          input={input}
+          setInput={setInput}
+        />
       </div>
     </div>
   );
