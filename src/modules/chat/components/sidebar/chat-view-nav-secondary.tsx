@@ -42,11 +42,27 @@ export function ChatViewNavSecondary({
 
   const trpc = useTRPC();
 
-  const { data: currentSubscription } = useQuery(
+  const { data: currentSubscription, isLoading } = useQuery(
     trpc.subscription.getCurrentSubscription.queryOptions()
   );
 
+  console.log(currentSubscription);
+
   const [plansDialogOpen, setPlansDialogOpen] = React.useState(false);
+
+  const dateToShow = currentSubscription?.billingCycleEnd
+    ? new Date(currentSubscription.billingCycleEnd)
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Adding 30 days
+
+  const formattedDate = dateToShow.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+  if (isLoading) {
+    return;
+  }
 
   return (
     <>
@@ -81,23 +97,31 @@ export function ChatViewNavSecondary({
                       {/* Header */}
                       <div className="flex items-center justify-between">
                         <h2 className="text-lg font-semibold tracking-tight capitalize">
-                          Free
+                          {currentSubscription
+                            ? currentSubscription.subscriptionType
+                            : "Free"}
                         </h2>
-                        <Button
-                          size="sm"
-                          className="rounded-full"
-                          variant="outline"
-                          onClick={() => setPlansDialogOpen(true)}
-                        >
-                          <CrownIcon className="h-4 w-4" />
-                        </Button>
+                        {!currentSubscription && (
+                          <Button
+                            size="sm"
+                            className="rounded-full"
+                            variant="outline"
+                            onClick={() => setPlansDialogOpen(true)}
+                          >
+                            <CrownIcon className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
 
                       {/* Usage Info */}
                       <div className="flex flex-col gap-1">
                         <p className="text-sm text-muted-foreground">
                           {formatNumber(0)} /{" "}
-                          {formatNumber(currentSubscription?.maxTokens || 0)}{" "}
+                          {formatNumber(
+                            currentSubscription
+                              ? currentSubscription.maxTokens
+                              : 15000
+                          )}{" "}
                           tokens used
                         </p>
                         <Progress value={20} className="h-2 rounded-full" />
@@ -110,18 +134,21 @@ export function ChatViewNavSecondary({
                   {/* Header */}
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold tracking-tight capitalize">
-                      free
+                      {currentSubscription
+                        ? currentSubscription.subscriptionType
+                        : "Free"}
                     </h2>
-
-                    <Button
-                      size="sm"
-                      className="rounded-full"
-                      variant="outline"
-                      onClick={() => setPlansDialogOpen(true)}
-                    >
-                      <CrownIcon className="h-4 w-4" />
-                      Upgrade
-                    </Button>
+                    {!currentSubscription && (
+                      <Button
+                        size="sm"
+                        className="rounded-full"
+                        variant="outline"
+                        onClick={() => setPlansDialogOpen(true)}
+                      >
+                        <CrownIcon className="h-4 w-4" />
+                        Upgrade
+                      </Button>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-1">
@@ -136,12 +163,7 @@ export function ChatViewNavSecondary({
                   {/* Ends At (only for Pro) */}
 
                   <p className="text-xs text-muted-foreground">
-                    Ends at{" "}
-                    {new Date().toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    Ends at {formattedDate}
                   </p>
                 </div>
               )}
