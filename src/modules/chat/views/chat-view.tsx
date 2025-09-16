@@ -6,12 +6,14 @@ import { useEffect } from "react";
 import { useChatIdStore } from "@/hooks/chat-id-store";
 import { ChatInput } from "@/components/custom/chat-input";
 import { TopBar } from "@/components/custom/top-bar";
+import { UIMessage } from "ai";
 
 interface Props {
   chatId: string;
+  previousMessages: UIMessage[]
 }
 
-export const ChatView = ({ chatId }: Props) => {
+export const ChatView = ({ chatId, previousMessages }: Props) => {
   const isMobile = useIsMobile();
 
   const { chatId: chatStoreId, setChatId } = useChatIdStore();
@@ -26,7 +28,7 @@ export const ChatView = ({ chatId }: Props) => {
     <ScrollArea className="relative h-screen  w-full mx-auto">
       <TopBar />
       <div className="h-6 bg-gradient-to-b z-50 from-background to-tra w-full absolute top-0 left-0" />
-        <MessagesList chatId={chatId} />
+        <MessagesList previousMessages={previousMessages} chatId={chatId} />
     </ScrollArea>
   );
 };

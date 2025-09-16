@@ -7,14 +7,12 @@ import {
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { systemPrompt } from "@/prompt";
-import { saveChat } from "@/actions/chat";
+import { saveChat, updateChatTitle } from "@/actions/chat";
 import { db } from "@/db";
 import { usageTable } from "@/db/schema";
 
 export async function POST(req: Request) {
   const { messages, model, chatId } = await req.json();
-
-  console.log(chatId);
 
   const authData = await auth.api.getSession({
     headers: await headers(),
@@ -85,6 +83,13 @@ export async function POST(req: Request) {
         messages: [userMessage, assistantMessage],
         modelId: model,
       });
+      if (messages.length < 2) {
+        updateChatTitle({
+          chatId,
+          messages,
+          model,
+        });
+      }
     },
   });
 }

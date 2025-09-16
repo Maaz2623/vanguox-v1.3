@@ -46,7 +46,11 @@ export function ChatViewNavSecondary({
     trpc.subscription.getCurrentSubscription.queryOptions()
   );
 
-  console.log(currentSubscription);
+  const { data: usage } = useQuery(trpc.usage.getMonthUsage.queryOptions());
+
+  const totalTokens = usage?.reduce((sum, u) => sum + u.tokensUsed, 0) ?? 0;
+
+  const maxTokens = currentSubscription?.maxTokens || 15000;
 
   const [plansDialogOpen, setPlansDialogOpen] = React.useState(false);
 
@@ -63,6 +67,8 @@ export function ChatViewNavSecondary({
   if (isLoading) {
     return;
   }
+
+  const progressValue = (totalTokens / maxTokens) * 100;
 
   return (
     <>
@@ -116,7 +122,7 @@ export function ChatViewNavSecondary({
                       {/* Usage Info */}
                       <div className="flex flex-col gap-1">
                         <p className="text-sm text-muted-foreground">
-                          {formatNumber(0)} /{" "}
+                          {formatNumber(totalTokens)} /{" "}
                           {formatNumber(
                             currentSubscription
                               ? currentSubscription.maxTokens
@@ -124,7 +130,10 @@ export function ChatViewNavSecondary({
                           )}{" "}
                           tokens used
                         </p>
-                        <Progress value={20} className="h-2 rounded-full" />
+                        <Progress
+                          value={progressValue}
+                          className="h-2 rounded-full"
+                        />
                       </div>
                     </div>
                   </TooltipContent>
@@ -153,11 +162,18 @@ export function ChatViewNavSecondary({
 
                   <div className="flex flex-col gap-1">
                     <p className="text-sm text-muted-foreground">
-                      {formatNumber(0)} /{" "}
-                      {formatNumber(currentSubscription?.maxTokens || 0)} tokens
-                      used
+                      {formatNumber(totalTokens)} /{" "}
+                      {formatNumber(
+                        currentSubscription
+                          ? currentSubscription.maxTokens
+                          : 15000
+                      )}{" "}
+                      tokens used
                     </p>
-                    <Progress value={20} className="h-2 rounded-full" />
+                    <Progress
+                      value={progressValue}
+                      className="h-2 rounded-full"
+                    />
                   </div>
 
                   {/* Ends At (only for Pro) */}

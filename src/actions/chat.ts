@@ -4,8 +4,8 @@ import { headers } from "next/headers";
 import { db } from "@/db";
 import { chatsTable, messagesTable } from "@/db/schema";
 import { auth } from "@/lib/auth/auth";
-import { UIMessage } from "ai";
-import { inArray } from "drizzle-orm";
+import { convertToModelMessages, generateText, UIMessage } from "ai";
+import { eq, inArray } from "drizzle-orm";
 
 export const getAuth = async () => {
   const authData = await auth.api.getSession({
@@ -77,5 +77,39 @@ export async function saveChat({
   } catch (error) {
     console.error("Failed to save chat:", error);
     return [];
+  }
+}
+
+export async function updateChatTitle({
+  messages,
+  chatId,
+  model,
+}: {
+  messages: UIMessage[];
+  chatId: string;
+  model: string;
+}) {
+  try {
+    const result = await generateText({
+      model,
+      messages: [
+        {
+          role: "system",
+          content: "Based on messages, suggest a chat title.",
+        },
+        ...convertToModelMessages(messages),
+      ],
+    });
+
+    const title = result.text;
+
+    await db
+      .update(chatsTable)
+      .set({
+        title,
+      })
+      .where(eq(chatsTable.id, chatId));
+  } catch (error) {
+    console.log(error);
   }
 }

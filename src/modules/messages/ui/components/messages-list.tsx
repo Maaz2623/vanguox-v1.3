@@ -31,17 +31,11 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 interface Props {
   chatId: string;
+  previousMessages: UIMessage[];
 }
 
-export const MessagesList = ({ chatId }: Props) => {
+export const MessagesList = ({ chatId, previousMessages }: Props) => {
   const trpc = useTRPC();
-
-  const { data: rawMessages } = useQuery(
-    trpc.chats.getChatMessages.queryOptions({ chatId })
-  );
-
-  const previousMessages: UIMessage[] =
-    rawMessages?.map((m) => m.message) ?? [];
 
   const { chatId: storeChatId, setChatId } = useChatIdStore();
 
@@ -63,6 +57,8 @@ export const MessagesList = ({ chatId }: Props) => {
   const sentRef = useRef(false);
 
   const { model } = useModelStore();
+
+  console.log(previousMessages);
 
   useEffect(() => {
     if (!storeChatId) {
@@ -132,8 +128,6 @@ export const MessagesList = ({ chatId }: Props) => {
 
     regenerate();
   };
-
-  console.log(previousMessages);
 
   return (
     <div className="mx-auto relative size-full h-screen w-full overflow-hidden">

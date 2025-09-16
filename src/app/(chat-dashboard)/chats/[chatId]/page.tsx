@@ -1,4 +1,6 @@
 import { ChatView } from "@/modules/chat/views/chat-view";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { UIMessage } from "ai";
 
 interface Props {
   params: Promise<{
@@ -8,7 +10,18 @@ interface Props {
 
 const ChatIdPage = async ({ params }: Props) => {
   const { chatId } = await params;
-  return <ChatView chatId={chatId} />;
+
+  const queryClient = getQueryClient();
+
+  const data = await queryClient.fetchQuery(
+    trpc.chats.getChatMessages.queryOptions({
+      chatId,
+    })
+  );
+
+  const previousMessages: UIMessage[] = data.map((m) => m.message) ?? [];
+
+  return <ChatView previousMessages={previousMessages} chatId={chatId} />;
 };
 
 export default ChatIdPage;

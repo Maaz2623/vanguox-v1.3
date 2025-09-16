@@ -19,6 +19,8 @@ import { useChatIdStore } from "@/hooks/chat-id-store";
 import { usePathname, useRouter } from "next/navigation";
 import { createChat } from "@/actions/chat";
 import { useChat } from "@ai-sdk/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 
 interface Props {
   input: string;
@@ -42,14 +44,18 @@ export function PromptInputWithActions({
   const { pendingFiles, setPendingFiles } = useChatStore();
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
+  const queryClient = useQueryClient();
+
+  const trpc = useTRPC();
+
   const { setModel: setAiModel, model, hydrated } = useHydratedModel();
 
   const handleSubmit = async () => {
     if (input.trim() || pendingFiles.length > 0) {
       if (pathname === "/") {
         await createChat().then((data) => {
-          setChatId(data.id);
           setPendingMessage(input);
+          queryClient.invalidateQueries(trpc.chats.getChats.queryOptions());
           router.push(`/chats/${data.id}`);
           setInput("");
         });

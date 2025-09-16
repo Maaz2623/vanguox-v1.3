@@ -2,7 +2,7 @@ import { getAuth } from "@/actions/chat";
 import { db } from "@/db";
 import { chatsTable, messagesTable } from "@/db/schema";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import z from "zod";
 
 export const chatRouter = createTRPCRouter({
@@ -32,7 +32,8 @@ export const chatRouter = createTRPCRouter({
     const chats = await db
       .select()
       .from(chatsTable)
-      .where(eq(chatsTable.userId, authData.user.id));
+      .where(eq(chatsTable.userId, authData.user.id))
+      .orderBy(desc(chatsTable.createdAt));
 
     return chats;
   }),
