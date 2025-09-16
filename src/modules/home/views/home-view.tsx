@@ -34,7 +34,6 @@ export const HomeView = () => {
     "What are some AI tools for productivity?",
     "Explain the latest trend in web development.",
   ];
-  const pathname = usePathname();
   const [input, setInput] = useState("");
 
   const { sendMessage, status } = useChat();

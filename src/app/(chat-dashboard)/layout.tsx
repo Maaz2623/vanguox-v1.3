@@ -21,7 +21,7 @@ export default async function ChatDashboardLayout({
 
   return (
     <>
-      <HexagonBackground className="absolute inset-0 flex items-center justify-center rounded-xl h-screen dark:opacity-20 opacity-30" />
+      <HexagonBackground className="absolute inset-0 flex items-center justify-center rounded-xl h-screen dark:opacity-20 opacity-50" />
       <ChatProvider>
         <SidebarProvider
           className="bg-background!"

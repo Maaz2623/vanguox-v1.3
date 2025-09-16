@@ -8,6 +8,8 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { systemPrompt } from "@/prompt";
 import { saveChat } from "@/actions/chat";
+import { db } from "@/db";
+import { usageTable } from "@/db/schema";
 
 export async function POST(req: Request) {
   const { messages, model, chatId } = await req.json();
@@ -68,6 +70,16 @@ export async function POST(req: Request) {
         .find((m) => m.role === "user");
 
       if (!userMessage) return;
+
+      const usage = await result.usage;
+
+      if (!usage.totalTokens) return;
+
+      await db.insert(usageTable).values({
+        tokensUsed: usage.totalTokens,
+        userId: authData.user.id,
+      });
+
       await saveChat({
         chatId,
         messages: [userMessage, assistantMessage],

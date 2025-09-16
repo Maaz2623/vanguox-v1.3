@@ -86,7 +86,7 @@ export function PromptInputWithActions({
       onValueChange={setInput}
       isLoading={isLoading}
       onSubmit={handleSubmit}
-      className="w-[70%]"
+      className="lg:w-[70%] w-[99%] sm:w-[90%]"
     >
       {pendingFiles.length > 0 && (
         <div className="flex flex-wrap gap-2 pb-2">

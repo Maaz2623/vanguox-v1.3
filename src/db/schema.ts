@@ -126,6 +126,22 @@ export const subscriptionTypeEnum = pgEnum("subscription_type", [
 
 export const tokensEnum = pgEnum("subscription_type", ["free", "pro"]);
 
+export const usageTable = pgTable("usage_table", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tokensUsed: integer("tokens_used").notNull(),
+  userId: text("user_id")
+    .references(() => user.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  createdAt: timestamp("created_at").$defaultFn(
+    () => /* @__PURE__ */ new Date()
+  ),
+  updatedAt: timestamp("updated_at").$defaultFn(
+    () => /* @__PURE__ */ new Date()
+  ),
+});
+
 export const subscriptionsTable = pgTable("subscriptions_table", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: text("user_id")
@@ -134,7 +150,7 @@ export const subscriptionsTable = pgTable("subscriptions_table", {
     })
     .notNull(),
   subscriptionType: subscriptionTypeEnum("subscription").notNull(),
-
+  maxTokens: integer("max_tokens").notNull(),
   billingCycleStart: timestamp("billing_cycle_start")
     .default(sql`now()`)
     .notNull(),

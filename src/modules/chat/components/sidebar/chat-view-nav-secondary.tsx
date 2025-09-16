@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { PlansDialog } from "../plans-dialog";
+import { useQuery } from "@tanstack/react-query";
 
 export function ChatViewNavSecondary({
   ...props
@@ -34,11 +35,16 @@ export function ChatViewNavSecondary({
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
+
   const router = useRouter();
 
   const { open } = useSidebar();
 
   const trpc = useTRPC();
+
+  const { data: currentSubscription } = useQuery(
+    trpc.subscription.getCurrentSubscription.queryOptions()
+  );
 
   const [plansDialogOpen, setPlansDialogOpen] = React.useState(false);
 
@@ -90,7 +96,9 @@ export function ChatViewNavSecondary({
                       {/* Usage Info */}
                       <div className="flex flex-col gap-1">
                         <p className="text-sm text-muted-foreground">
-                          {formatNumber(0)} / {formatNumber(50000)} tokens used
+                          {formatNumber(0)} /{" "}
+                          {formatNumber(currentSubscription?.maxTokens || 0)}{" "}
+                          tokens used
                         </p>
                         <Progress value={20} className="h-2 rounded-full" />
                       </div>
@@ -116,11 +124,11 @@ export function ChatViewNavSecondary({
                     </Button>
                   </div>
 
-                  {/* Usage Info */}
                   <div className="flex flex-col gap-1">
                     <p className="text-sm text-muted-foreground">
-                      {formatNumber(0)} / {formatNumber(50000)}
-                      tokens used
+                      {formatNumber(0)} /{" "}
+                      {formatNumber(currentSubscription?.maxTokens || 0)} tokens
+                      used
                     </p>
                     <Progress value={20} className="h-2 rounded-full" />
                   </div>
