@@ -1,3 +1,4 @@
+import { getAuth } from "@/actions/chat";
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
@@ -8,6 +9,8 @@ const razorpay = new Razorpay({
 
 export async function POST(req: Request) {
   const { amount, currency } = await req.json();
+
+  await getAuth();
 
   if (amount !== 399) {
     return;
