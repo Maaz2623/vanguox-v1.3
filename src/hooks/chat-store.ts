@@ -1,23 +1,24 @@
+import { UploadingFile } from "@/components/custom/prompt-input-with-actions";
 import { create } from "zustand";
 
 interface ChatStore {
   pendingMessage: string | null;
-  pendingFiles: File[];
-  fileUrl: string | null;
-  setFileUrl: (url: string | null) => void;
   setPendingMessage: (msg: string | null) => void;
-  setPendingFiles: (files: File[] | ((prev: File[]) => File[])) => void;
+  uploadingFiles: UploadingFile[];
+  setUploadingFiles: (
+    files: UploadingFile[] | ((prev: UploadingFile[]) => UploadingFile[])
+  ) => void;
+  clearUploadingFiles: () => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
-  fileUrl: null,
   pendingMessage: null,
-  pendingFiles: [],
   setPendingMessage: (msg) => set({ pendingMessage: msg }),
-  setPendingFiles: (files) =>
+  uploadingFiles: [],
+  setUploadingFiles: (files) =>
     set((state) => ({
-      pendingFiles:
-        typeof files === "function" ? files(state.pendingFiles) : files,
+      uploadingFiles:
+        typeof files === "function" ? files(state.uploadingFiles) : files,
     })),
-  setFileUrl: (url) => set({ fileUrl: url }),
+  clearUploadingFiles: () => set({ uploadingFiles: [] }),
 }));

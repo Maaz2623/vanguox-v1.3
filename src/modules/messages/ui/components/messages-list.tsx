@@ -44,10 +44,8 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
   const {
     pendingMessage,
     setPendingMessage,
-    pendingFiles,
-    setPendingFiles,
-    fileUrl,
-    setFileUrl,
+    uploadingFiles,
+    setUploadingFiles,
   } = useChatStore();
 
   const { messages, sendMessage, regenerate, status } = useChat({
@@ -70,27 +68,30 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
         sendMessage(
           {
             role: "user",
-            parts: [{ type: "text", text: pendingMessage }],
+            parts: [
+              { type: "text", text: pendingMessage },
+              ...uploadingFiles
+                .filter((f) => f.url)
+                .map((f) => ({
+                  filename: f.file.name,
+                  type: "file" as const,
+                  url: f.url!,
+                  mediaType: f.file.type,
+                })),
+            ],
           },
           { body: { model: model.id, chatId: chatId } }
         );
 
         setPendingMessage(null);
-        setPendingFiles([]);
-        setFileUrl(null);
+        setUploadingFiles([]);
       };
 
       send();
     }
-  }, [
-    pendingMessage,
-    pendingFiles,
-    sendMessage,
-    setPendingMessage,
-    setPendingFiles,
-    model.id,
-    chatId,
-  ]);
+  }, [pendingMessage, sendMessage, setPendingMessage, model.id, chatId]);
+
+  console.log(uploadingFiles);
 
   const pathname = usePathname();
 
