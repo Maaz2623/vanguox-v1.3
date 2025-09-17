@@ -29,24 +29,34 @@ type FilePart = {
   url: string; // can be base64 (before upload) or uploaded URL (after upload)
 };
 
-// ✅ File conversion helperexport
-export async function convertFileToDataURL(
-  file: File,
-  uploadedUrl?: string
-): Promise<FilePart> {
-  return new Promise<FilePart>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve({
-        type: "file",
-        mediaType: file.type,
-        // ✅ use uploadedUrl if provided, else fallback to base64 preview
-        url: uploadedUrl ?? (reader.result as string),
-      });
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+export async function convertFilesToDataURLs(
+  files: FileList
+): Promise<
+  { type: "file"; filename: string; mediaType: string; url: string }[]
+> {
+  return Promise.all(
+    Array.from(files).map(
+      (file) =>
+        new Promise<{
+          type: "file";
+          filename: string;
+          mediaType: string;
+          url: string;
+        }>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              type: "file",
+              filename: file.name,
+              mediaType: file.type,
+              url: reader.result as string, // Data URL
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+    )
+  );
 }
 
 export const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789");

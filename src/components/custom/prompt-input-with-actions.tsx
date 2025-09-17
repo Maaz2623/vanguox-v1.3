@@ -21,6 +21,8 @@ import { createChat } from "@/actions/chat";
 import { useChat } from "@ai-sdk/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
+import { useUploadThing } from "@/lib/uploadthing";
+import { convertFilesToDataURLs } from "@/lib/utils";
 
 interface Props {
   input: string;
@@ -46,24 +48,57 @@ export function PromptInputWithActions({
 
   const queryClient = useQueryClient();
 
+  const [files, setFiles] = useState<FileList | undefined>(undefined);
+
   const trpc = useTRPC();
 
   const { setModel: setAiModel, model, hydrated } = useHydratedModel();
+
+  const [uploading, setUploading] = useState(false);
+
+  const [progress, setProgress] = useState(0);
+
+  const [filesUrl, setFilesUrl] = useState<string[]>([]);
+
+  const { startUpload } = useUploadThing("imageUploader", {
+    onUploadProgress: (p) => {
+      setUploading(true);
+      setProgress(p); // p = percentage (0-100)
+    },
+    onClientUploadComplete: (data) => {
+      setFilesUrl(data.map((upload) => upload.ufsUrl));
+      setUploading(false);
+      setProgress(100);
+    },
+  });
+
+  console.log(filesUrl);
 
   const handleSubmit = async () => {
     if (input.trim() || pendingFiles.length > 0) {
       if (pathname === "/") {
         await createChat().then((data) => {
           setPendingMessage(input);
+          startUpload(pendingFiles);
           queryClient.invalidateQueries(trpc.chats.getChats.queryOptions());
           router.push(`/chats/${data.id}`);
           setInput("");
         });
       } else {
+        const fileParts =
+          files && files.length > 0 ? await convertFilesToDataURLs(files) : [];
         sendMessage(
           {
             role: "user",
-            parts: [{ type: "text", text: input }],
+            parts: [
+              { type: "text", text: input },
+              {
+                filename: "harry",
+                type: "file",
+                url: filesUrl[0],
+                mediaType: "image/*",
+              },
+            ],
           },
           { body: { model: model.id, chatId: chatId } }
         );
@@ -76,8 +111,11 @@ export function PromptInputWithActions({
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
       setPendingFiles((prev) => [...prev, ...newFiles]);
+      startUpload(Array.from(event.target.files));
     }
   };
+
+  console.log(pendingFiles);
 
   const handleRemoveFile = (index: number) => {
     setPendingFiles((prev) => prev.filter((_, i) => i !== index));

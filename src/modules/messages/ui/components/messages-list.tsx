@@ -4,7 +4,6 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   Reasoning,
@@ -14,6 +13,7 @@ import {
 import { Response } from "@/components/ai-elements/response";
 import { ChatInput } from "@/components/custom/chat-input";
 import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
+import { Loader } from "@/components/ui/loader";
 import { useModelStore } from "@/hooks/ai-model-store";
 import { useChatIdStore } from "@/hooks/chat-id-store";
 import { useChatStore } from "@/hooks/chat-store";
@@ -58,8 +58,6 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
 
   const { model } = useModelStore();
 
-  console.log(previousMessages);
-
   useEffect(() => {
     if (!storeChatId) {
       setChatId(chatId);
@@ -69,10 +67,6 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
       sentRef.current = true;
 
       const send = async () => {
-        // const fileParts =
-        //   pendingFile && fileUrl
-        //     ? [await convertFileToDataURL(pendingFile, fileUrl)]
-        //     : [];
         sendMessage(
           {
             role: "user",
@@ -128,6 +122,9 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
 
     regenerate();
   };
+
+  const lastMessage = messages[messages.length - 1]; // Get the last message
+  // const isLastMessageUser = lastMessage.role === "user";
 
   return (
     <div className="mx-auto relative size-full h-screen w-full overflow-hidden">
@@ -272,7 +269,9 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                     </Message>
                   </div>
                 ))}
-                {status === "submitted" && <Loader className="ml-5 mt-5" />}
+                {status === "submitted" && (
+                  <Loader variant={`typing`} className="ml-5 mt-5" />
+                )}
               </div>
             </ConversationContent>
             <ConversationScrollButton className="z-100 mb-26 bg-background!" />
