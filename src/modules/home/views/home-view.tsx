@@ -38,8 +38,6 @@ export const HomeView = () => {
 
   const { sendMessage, status } = useChat();
 
-  const { pendingFiles } = useChatStore();
-
   return (
     <div className="h-screen w-full relative flex justify-center flex-col items-center gap-y-8">
       <TopBar />
