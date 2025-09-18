@@ -36,7 +36,7 @@ export const ChatInput = () => {
   const pathname = usePathname();
   const [input, setInput] = useState("");
 
-  const { pendingFiles } = useChatStore();
+  const { uploadingFiles } = useChatStore();
 
   const { sendMessage, status } = useChat();
 
@@ -47,7 +47,7 @@ export const ChatInput = () => {
         pathname === "/" ? "bottom-40 bg-transparent" : "bottom-0"
       )}
     >
-      {pathname === "/" && pendingFiles.length === 0 && (
+      {pathname === "/" && uploadingFiles.length === 0 && (
         <ScrollArea className="w-full sm:w-4/5 md:w-2/3 lg:w-1/2 mb-7">
           <Suggestions className="flex gap-2 overflow-x-auto px-2">
             {suggestionsList.map((s, i) => (
