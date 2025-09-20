@@ -6,8 +6,9 @@ import {
   PromptInputActions,
   PromptInputTextarea,
 } from "@/components/ui/prompt-input";
+
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Square, X, Check, Loader2 } from "lucide-react"; // ✅ Added icons
+import { ArrowUp, Square, X, Check } from "lucide-react";
 import { useRef, useState } from "react";
 import { AiModelsComboBox } from "./ai-models-combo-box";
 import { models } from "@/constants";
@@ -45,6 +46,9 @@ export function PromptInputWithActions({
   const { setPendingMessage } = useChatStore();
   const { chatId } = useChatIdStore();
   const router = useRouter();
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const [isUploading, setIsUploading] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -56,28 +60,31 @@ export function PromptInputWithActions({
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([]);
 
   const {
-    uploadingFiles: uploadingFilesStore,
     setUploadingFiles: setUploadingFilesStore,
+    uploadingFiles: uploadingFilesStore,
   } = useChatStore();
+
+  console.log(uploadingFilesStore);
 
   // ✅ UploadThing v6 usage
   const { startUpload } = useUploadThing("imageUploader", {
+    onUploadBegin: () => {
+      setIsUploading(true);
+    },
+    uploadProgressGranularity: "fine",
     onUploadProgress: (p) => {
+      // UploadThing sends global progress (all files together)
+      setUploadProgress(p);
       if (pathname === "/") {
         setUploadingFilesStore((prev) =>
-          prev.map((f, i) =>
-            i === prev.length - 1 ? { ...f, progress: p } : f
-          )
+          prev.map((f) => ({ ...f, progress: p }))
         );
       } else {
-        setUploadingFiles((prev) =>
-          prev.map((f, i) =>
-            i === prev.length - 1 ? { ...f, progress: p } : f
-          )
-        );
+        setUploadingFiles((prev) => prev.map((f) => ({ ...f, progress: p })));
       }
     },
     onClientUploadComplete: (data) => {
+      setIsUploading(false);
       if (pathname === "/") {
         setUploadingFilesStore((prev) =>
           prev.map((f, i) =>
@@ -101,13 +108,20 @@ export function PromptInputWithActions({
   const handleSubmit = async () => {
     if (input.trim() || uploadingFiles.length > 0) {
       if (pathname === "/") {
-        await createChat().then((data) => {
-          setPendingMessage(input);
-          queryClient.invalidateQueries(trpc.chats.getChats.queryOptions());
-          router.push(`/chats/${data.id}`);
-          setInput("");
-        });
+        if (isUploading) {
+          return;
+        } else {
+          await createChat().then((data) => {
+            setPendingMessage(input);
+            queryClient.invalidateQueries(trpc.chats.getChats.queryOptions());
+            router.push(`/chats/${data.id}`);
+            setInput("");
+          });
+        }
       } else {
+        if (isUploading) {
+          return;
+        }
         sendMessage(
           {
             role: "user",
@@ -140,15 +154,21 @@ export function PromptInputWithActions({
       progress: 0,
     }));
 
-    setUploadingFiles((prev) => [...prev, ...newUploads]);
+    if (pathname === "/") {
+      setUploadingFilesStore((prev) => [...prev, ...newUploads]);
+    } else {
+      setUploadingFiles((prev) => [...prev, ...newUploads]);
+    }
 
-    // ✅ Upload files (progress handled by hook)
+    // ✅ Upload files
     startUpload(files);
 
     if (uploadInputRef.current) {
       uploadInputRef.current.value = "";
     }
   };
+
+  const filesToRender = pathname === "/" ? uploadingFilesStore : uploadingFiles;
 
   const handleRemoveFile = (file: File) => {
     setUploadingFiles((prev) => prev.filter((f) => f.file !== file));
@@ -158,7 +178,6 @@ export function PromptInputWithActions({
   };
 
   // ✅ Check if any file is still uploading
-  const isUploading = uploadingFiles.some((f) => f.progress < 100);
 
   return (
     <PromptInput
@@ -170,21 +189,23 @@ export function PromptInputWithActions({
     >
       {uploadingFiles.length > 0 && (
         <div className="flex flex-wrap gap-2 pb-2 w-full">
-          {uploadingFiles.map((f, index) => (
+          {filesToRender.map((f, index) => (
             <div
               key={index}
               className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm w-[220px]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Loader or Tick */}
-              {f.progress < 100 ? (
-                <Loader2 className="size-4 animate-spin text-primary" />
+              {uploadProgress < 100 ? (
+                <span className="text-xs text-muted-foreground">
+                  {uploadProgress}%
+                </span>
               ) : (
                 <Check className="size-4 text-green-500" />
               )}
 
               <div className="flex-1">
-                <span className="block max-w-[120px] truncate text-xs font-medium">
+                <span className="block max-w-[120px] truncate text-sm font-medium">
                   {f.file.name}
                 </span>
               </div>

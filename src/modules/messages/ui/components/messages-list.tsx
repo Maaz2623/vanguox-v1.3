@@ -24,7 +24,7 @@ import { useTRPC } from "@/trpc/client";
 import { useChat } from "@ai-sdk/react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { UIMessage } from "ai";
-import { CheckIcon, CopyIcon, RefreshCcwIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, FileIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -91,8 +91,6 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
     }
   }, [pendingMessage, sendMessage, setPendingMessage, model.id, chatId]);
 
-  console.log(uploadingFiles);
-
   const pathname = usePathname();
 
   const isMobile = useIsMobile();
@@ -124,9 +122,6 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
     regenerate();
   };
 
-  const lastMessage = messages[messages.length - 1]; // Get the last message
-  // const isLastMessageUser = lastMessage.role === "user";
-
   return (
     <div className="mx-auto relative size-full h-screen w-full overflow-hidden">
       {/* {!isMobile && (
@@ -154,6 +149,29 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                           : message.parts
                         ).map((part, i) => {
                           switch (part.type) {
+                            case "file":
+                              return (
+                                <div
+                                  key={`${message.id}-file-${i}`}
+                                  className="flex mb-2 items-center gap-2 border px-1 py-1 rounded-lg text-sm shadow-sm max-w-[200px] h-[40px] bg-muted justify-start w-[150px]"
+                                >
+                                  {/* show file icon based on mediaType */}
+                                  {part.mediaType.startsWith("image/") ? (
+                                    <Image
+                                      src={part.url}
+                                      alt="uploaded file"
+                                      width={40}
+                                      height={40}
+                                      className="rounded-md object-cover"
+                                    />
+                                  ) : (
+                                    <FileIcon className="size-5" />
+                                  )}
+                                  <p className="text-md mx-auto text-muted-foreground">
+                                    {part.mediaType}
+                                  </p>
+                                </div>
+                              );
                             case "reasoning":
                               return (
                                 <Reasoning
