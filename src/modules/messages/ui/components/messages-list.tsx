@@ -132,7 +132,7 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
         <div className="flex flex-col h-screen overflow-hidden">
           <Conversation className="max-h-screen  overflow-hidden  w-full">
             <ConversationContent
-              className={cn("w-[70%] mx-auto", isMobile && "w-full")}
+              className={cn("w-[70%] pt-10 mx-auto", isMobile && "w-full")}
             >
               <div className="h-full pb-[40vh] z-50">
                 {messages.map((message) => (
@@ -152,26 +152,22 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                             case "file":
                               return (
                                 <div
-                                  key={`${message.id}-file-${i}`}
-                                  className="flex mb-2 items-center gap-2 border px-1 py-1 rounded-lg text-sm shadow-sm max-w-[200px] h-[40px] bg-muted justify-start w-[150px]"
+                                  key={i}
+                                  className="relative border rounded-lg w-[200px] h-[250px] overflow-hidden flex items-center justify-center"
                                 >
-                                  {/* show file icon based on mediaType */}
                                   {part.mediaType.startsWith("image/") ? (
                                     <Image
                                       src={part.url}
                                       alt="uploaded file"
-                                      width={40}
-                                      height={40}
-                                      className="rounded-md object-cover"
+                                      fill
+                                      className="object-contain"
                                     />
                                   ) : (
-                                    <FileIcon className="size-5" />
+                                    <FileIcon className="size-10 text-gray-500" />
                                   )}
-                                  <p className="text-md mx-auto text-muted-foreground">
-                                    {part.mediaType}
-                                  </p>
                                 </div>
                               );
+
                             case "reasoning":
                               return (
                                 <Reasoning
