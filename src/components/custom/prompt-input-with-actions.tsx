@@ -171,7 +171,11 @@ export function PromptInputWithActions({
   const filesToRender = pathname === "/" ? uploadingFilesStore : uploadingFiles;
 
   const handleRemoveFile = (file: File) => {
-    setUploadingFiles((prev) => prev.filter((f) => f.file !== file));
+    if (pathname === "/") {
+      setUploadingFilesStore((prev) => prev.filter((f) => f.file !== file));
+    } else {
+      setUploadingFiles((prev) => prev.filter((f) => f.file !== file));
+    }
     if (uploadInputRef.current) {
       uploadInputRef.current.value = "";
     }
@@ -187,39 +191,40 @@ export function PromptInputWithActions({
       onSubmit={handleSubmit}
       className="lg:w-[70%] w-[99%] sm:w-[90%]"
     >
-      {uploadingFiles.length > 0 && (
-        <div className="flex flex-wrap gap-2 pb-2 w-full">
-          {filesToRender.map((f, index) => (
-            <div
-              key={index}
-              className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm w-[220px]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Loader or Tick */}
-              {uploadProgress < 100 ? (
-                <span className="text-xs text-muted-foreground">
-                  {uploadProgress}%
-                </span>
-              ) : (
-                <Check className="size-4 text-green-500" />
-              )}
-
-              <div className="flex-1">
-                <span className="block max-w-[120px] truncate text-sm font-medium">
-                  {f.file.name}
-                </span>
-              </div>
-
-              <button
-                onClick={() => handleRemoveFile(f.file)}
-                className="hover:bg-secondary/50 rounded-full p-1"
+      {uploadingFiles.length ||
+        (uploadingFilesStore.length > 0 && (
+          <div className="flex flex-wrap gap-2 pb-2 w-full">
+            {filesToRender.map((f, index) => (
+              <div
+                key={index}
+                className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm w-[220px]"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="size-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                {/* Loader or Tick */}
+                {uploadProgress < 100 ? (
+                  <span className="text-xs text-muted-foreground">
+                    {uploadProgress}%
+                  </span>
+                ) : (
+                  <Check className="size-4 text-green-500" />
+                )}
+
+                <div className="flex-1">
+                  <span className="block max-w-[120px] truncate text-sm font-medium">
+                    {f.file.name}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => handleRemoveFile(f.file)}
+                  className="hover:bg-secondary/50 rounded-full p-1"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        ))}
 
       <PromptInputTextarea
         autoFocus
