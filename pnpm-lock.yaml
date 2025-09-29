@@ -167,6 +167,9 @@ importers:
       next:
         specifier: 15.5.3
         version: 15.5.3(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next-nprogress-bar:
+        specifier: ^2.4.7
+        version: 2.4.7
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -3181,6 +3184,9 @@ packages:
     resolution: {integrity: sha512-k1oiVNN4hDK8NcNERSZLQiMfRzEGtfnvZvdBvey3SQbgn8Dcrk0h1I6vpxApjb10PFUflZrgJ2WEZyJQ+5v7YQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
 
+  next-nprogress-bar@2.4.7:
+    resolution: {integrity: sha512-OeveNQYFBhQhZ+RgrDnvHNUEQfHCmipymmD4AfAVE9pFV4jeWi7/nNK5f0lIk7ODRrtjyyr/n2YpkRbs5kUoMg==}
+
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
     peerDependencies:
@@ -3211,6 +3217,9 @@ packages:
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
+
+  nprogress-v2@1.1.10:
+    resolution: {integrity: sha512-MypWLNIPIM07SS0bAc/oac0vhVFz9vAHm7d1sj//Pnf3J03LQ3CuWrlDteIu6exq0fIvkDJ6tUDRWLaifsIt5w==}
 
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
@@ -6864,6 +6873,10 @@ snapshots:
 
   nanostores@0.11.4: {}
 
+  next-nprogress-bar@2.4.7:
+    dependencies:
+      nprogress-v2: 1.1.10
+
   next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -6897,6 +6910,8 @@ snapshots:
     dependencies:
       detect-libc: 2.1.0
     optional: true
+
+  nprogress-v2@1.1.10: {}
 
   nprogress@0.2.0: {}
 
