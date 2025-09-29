@@ -50,7 +50,7 @@ export function AiModelsComboBox({
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-full sm:w-fit justify-between max-w-[90vw] sm:max-w-none"
+          className="w-full sm:w-fit justify-between max-w-[200px] sm:max-w-none"
         >
           {selectedModel ? (
             <div className="flex items-center gap-x-2 truncate">
@@ -66,7 +66,7 @@ export function AiModelsComboBox({
           ) : (
             "Select model..."
           )}
-          <ChevronUpIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronUpIcon className="ml-1 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 

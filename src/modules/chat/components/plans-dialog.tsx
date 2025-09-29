@@ -30,7 +30,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Script from "next/script";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/animate-ui/components/radix/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Props {
   open: boolean;
@@ -50,7 +56,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "₹1 / month",
+    price: "₹399 / month",
     description: "Unlock all AI tools and higher limits.",
     highlight: true,
     features: [
@@ -132,7 +138,7 @@ export const PlansDialog = ({ open, setOpen }: Props) => {
             <CardTitle className="flex items-center justify-between">
               {plan.name}
               {plan.highlight && (
-                <span className="text-xs px-2 py-1 rounded-full bg-primary text-white">
+                <span className="text-xs px-2 py-1 rounded-full bg-background/70  text-white">
                   Recommended
                 </span>
               )}

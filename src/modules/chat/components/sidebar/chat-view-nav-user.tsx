@@ -119,18 +119,6 @@ export function ChatViewNavUser({
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CrownIcon />
-                Upgrade
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem

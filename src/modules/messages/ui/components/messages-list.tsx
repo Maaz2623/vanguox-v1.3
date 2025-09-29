@@ -48,7 +48,7 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
     setUploadingFiles,
   } = useChatStore();
 
-  const { messages, sendMessage, regenerate, status } = useChat({
+  const { messages, sendMessage, regenerate, status, error } = useChat({
     messages: previousMessages,
   });
 
@@ -211,7 +211,7 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                                     )}
                                     <Response
                                       className={cn(
-                                        "text-[16px] leading-relaxed max-w-[40vw]! overflow-x-auto!",
+                                        "text-[16px] leading-relaxed md:max-w-[40vw]! overflow-x-auto!",
                                         message.role === "user" &&
                                           "dark:bg-primary/10! dark:text-white bg-primary px-3 py-2 text-[16px] !rounded-tl-2xl !rounded-tr-2xl !rounded-bl-2xl !rounded-br-none",
                                         isMobile && "text-[14px] max-w-[60vw]!"
@@ -280,6 +280,11 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                               }
                           }
                         })}
+                        {error && (
+                          <p className="text-muted-foreground">
+                            {JSON.parse(error.message)}
+                          </p>
+                        )}
                       </MessageContent>
                     </Message>
                   </div>

@@ -10,6 +10,8 @@ import { systemPrompt } from "@/prompt";
 import { saveChat, updateChatTitle } from "@/actions/chat";
 import { db } from "@/db";
 import { usageTable } from "@/db/schema";
+import { usageExceeded } from "@/actions/usage";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { messages, model, chatId } = await req.json();
@@ -22,74 +24,82 @@ export async function POST(req: Request) {
     throw new Error("Unauthorized");
   }
 
-  const result = streamText({
-    model,
-    system: `${systemPrompt}`,
-    messages: convertToModelMessages(messages),
-    experimental_transform: smoothStream({
-      chunking: "word",
-      delayInMs: 25,
-    }),
-    // tools: {
-    //   webSearcher,
-    //   imageGenerator: imageGenerator(model),
-    //   getInformation,
-    //   addResource,
-    // },
-  });
+  const exceeded = await usageExceeded(authData.user.id);
 
-  return result.toUIMessageStreamResponse({
-    sendReasoning: true,
-    sendSources: true,
-    originalMessages: messages,
-    generateMessageId: createIdGenerator({
-      prefix: "msg",
-      size: 16,
-    }),
-    onFinish: async ({ messages: updatedMessages }) => {
-      const reversed = [...updatedMessages].reverse();
-      const assistantMessage = reversed.find(
-        (m) =>
-          m.role === "assistant" &&
-          m.parts.some((p) => p.type === "text") &&
-          m.parts.every(
-            (p) => p.type !== "tool-generateImage" || p.output !== undefined
-          )
-      );
+  if (exceeded) {
+    return NextResponse.json("Token limit exceeded.", {
+      status: 403,
+    });
+  } else {
+    const result = streamText({
+      model,
+      system: `${systemPrompt}`,
+      messages: convertToModelMessages(messages),
+      experimental_transform: smoothStream({
+        chunking: "word",
+        delayInMs: 25,
+      }),
+      // tools: {
+      //   webSearcher,
+      //   imageGenerator: imageGenerator(model),
+      //   getInformation,
+      //   addResource,
+      // },
+    });
 
-      if (!assistantMessage) return;
+    return result.toUIMessageStreamResponse({
+      sendReasoning: true,
+      sendSources: true,
+      originalMessages: messages,
+      generateMessageId: createIdGenerator({
+        prefix: "msg",
+        size: 16,
+      }),
+      onFinish: async ({ messages: updatedMessages }) => {
+        const reversed = [...updatedMessages].reverse();
+        const assistantMessage = reversed.find(
+          (m) =>
+            m.role === "assistant" &&
+            m.parts.some((p) => p.type === "text") &&
+            m.parts.every(
+              (p) => p.type !== "tool-generateImage" || p.output !== undefined
+            )
+        );
 
-      const assistantIndex = updatedMessages.findIndex(
-        (m) => m.id === assistantMessage.id
-      );
-      const userMessage = updatedMessages
-        .slice(0, assistantIndex)
-        .reverse()
-        .find((m) => m.role === "user");
+        if (!assistantMessage) return;
 
-      if (!userMessage) return;
+        const assistantIndex = updatedMessages.findIndex(
+          (m) => m.id === assistantMessage.id
+        );
+        const userMessage = updatedMessages
+          .slice(0, assistantIndex)
+          .reverse()
+          .find((m) => m.role === "user");
 
-      const usage = await result.usage;
+        if (!userMessage) return;
 
-      if (!usage.totalTokens) return;
+        const usage = await result.usage;
 
-      await db.insert(usageTable).values({
-        tokensUsed: usage.totalTokens,
-        userId: authData.user.id,
-      });
+        if (!usage.totalTokens) return;
 
-      await saveChat({
-        chatId,
-        messages: [userMessage, assistantMessage],
-        modelId: model,
-      });
-      if (messages.length < 2) {
-        updateChatTitle({
-          chatId,
-          messages,
-          model,
+        await db.insert(usageTable).values({
+          tokensUsed: usage.totalTokens,
+          userId: authData.user.id,
         });
-      }
-    },
-  });
+
+        await saveChat({
+          chatId,
+          messages: [userMessage, assistantMessage],
+          modelId: model,
+        });
+        if (messages.length < 2) {
+          updateChatTitle({
+            chatId,
+            messages,
+            model,
+          });
+        }
+      },
+    });
+  }
 }

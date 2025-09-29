@@ -191,40 +191,39 @@ export function PromptInputWithActions({
       onSubmit={handleSubmit}
       className="lg:w-[70%] w-[99%] sm:w-[90%]"
     >
-      {uploadingFiles.length ||
-        (uploadingFilesStore.length > 0 && (
-          <div className="flex flex-wrap gap-2 pb-2 w-full">
-            {filesToRender.map((f, index) => (
-              <div
-                key={index}
-                className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm w-[220px]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Loader or Tick */}
-                {uploadProgress < 100 ? (
-                  <span className="text-xs text-muted-foreground">
-                    {uploadProgress}%
-                  </span>
-                ) : (
-                  <Check className="size-4 text-green-500" />
-                )}
+      {filesToRender.length > 0 && (
+        <div className="flex flex-wrap gap-2 pb-2 w-full">
+          {filesToRender.map((f, index) => (
+            <div
+              key={index}
+              className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm w-[220px]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Loader or Tick */}
+              {f.progress < 100 ? (
+                <span className="text-xs text-muted-foreground">
+                  {f.progress}%
+                </span>
+              ) : (
+                <Check className="size-4 text-green-500" />
+              )}
 
-                <div className="flex-1">
-                  <span className="block max-w-[120px] truncate text-sm font-medium">
-                    {f.file.name}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => handleRemoveFile(f.file)}
-                  className="hover:bg-secondary/50 rounded-full p-1"
-                >
-                  <X className="size-4" />
-                </button>
+              <div className="flex-1">
+                <span className="block max-w-[120px] truncate text-sm font-medium">
+                  {f.file.name}
+                </span>
               </div>
-            ))}
-          </div>
-        ))}
+
+              <button
+                onClick={() => handleRemoveFile(f.file)}
+                className="hover:bg-secondary/50 rounded-full p-1"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       <PromptInputTextarea
         autoFocus
@@ -234,10 +233,10 @@ export function PromptInputWithActions({
 
       <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
         <div className="flex gap-x-1">
-          <PromptInputAction tooltip="Attach files">
+          <PromptInputAction tooltip="Attach files" className="shrink-0">
             <label
               htmlFor="file-upload"
-              className="hover:bg-secondary-foreground/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"
+              className="hover:bg-secondary-foreground/10 shrink-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"
             >
               <input
                 type="file"
@@ -247,7 +246,7 @@ export function PromptInputWithActions({
                 id="file-upload"
                 ref={uploadInputRef}
               />
-              <span className="text-primary text-lg">+</span>
+              <span className="text-primary text-lg shrink-0">+</span>
             </label>
           </PromptInputAction>
           <PromptInputAction tooltip="Select AI Model">
@@ -258,7 +257,7 @@ export function PromptInputWithActions({
                 onChange={(selectedModel) => setAiModel(selectedModel)}
               />
             ) : (
-              <Skeleton className="w-[150px] h-8 bg-foreground/10" />
+              <Skeleton className="w-[100px] md:w-[150px] h-8 bg-foreground/10" />
             )}
           </PromptInputAction>
         </div>
