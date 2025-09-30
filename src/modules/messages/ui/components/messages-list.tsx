@@ -20,7 +20,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, sanitizeText } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useChat } from "@ai-sdk/react";
-import { UIMessage } from "ai";
+import { lastAssistantMessageIsCompleteWithToolCalls, UIMessage } from "ai";
 import { CheckIcon, CopyIcon, FileIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -47,6 +47,7 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
 
   const { messages, sendMessage, regenerate, status, error } = useChat({
     messages: previousMessages,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   });
 
   const sentRef = useRef(false);
