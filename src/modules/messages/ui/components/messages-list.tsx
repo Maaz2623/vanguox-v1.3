@@ -11,7 +11,6 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
-import { ChatInput } from "@/components/custom/chat-input";
 import { PromptInputWithActions } from "@/components/custom/prompt-input-with-actions";
 import { Loader } from "@/components/ui/loader";
 import { useModelStore } from "@/hooks/ai-model-store";
@@ -19,10 +18,8 @@ import { useChatIdStore } from "@/hooks/chat-id-store";
 import { useChatStore } from "@/hooks/chat-store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, sanitizeText } from "@/lib/utils";
-import { useSharedChatContext } from "@/modules/chat/components/chat-provider";
 import { useTRPC } from "@/trpc/client";
 import { useChat } from "@ai-sdk/react";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { UIMessage } from "ai";
 import { CheckIcon, CopyIcon, FileIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
@@ -222,12 +219,12 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                                     </Response>
                                     {message.role === "assistant" && (
                                       <div className="flex gap-2 mt-2 mb-4">
-                                        <Action
+                                        {/* <Action
                                           onClick={safeRegenerate}
                                           label="Retry"
                                         >
                                           <RefreshCcwIcon className="size-3.5" />
-                                        </Action>
+                                        </Action> */}
                                         <Action
                                           onClick={() =>
                                             handleCopy(

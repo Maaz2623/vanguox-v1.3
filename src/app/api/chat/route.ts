@@ -12,6 +12,13 @@ import { db } from "@/db";
 import { usageTable } from "@/db/schema";
 import { usageExceeded } from "@/actions/usage";
 import { NextResponse } from "next/server";
+import {
+  addResource,
+  appBuilder,
+  getInformation,
+  imageGenerator,
+  webSearcher,
+} from "@/ai/tools";
 
 export async function POST(req: Request) {
   const { messages, model, chatId } = await req.json();
@@ -39,12 +46,13 @@ export async function POST(req: Request) {
         chunking: "word",
         delayInMs: 25,
       }),
-      // tools: {
-      //   webSearcher,
-      //   imageGenerator: imageGenerator(model),
-      //   getInformation,
-      //   addResource,
-      // },
+      tools: {
+        webSearcher,
+        imageGenerator: imageGenerator(model),
+        getInformation,
+        addResource,
+        appBuilder,
+      },
     });
 
     return result.toUIMessageStreamResponse({

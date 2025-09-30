@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/prompt-input";
 
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Square, X, Check } from "lucide-react";
+import { ArrowUp, Square, X, Check, SparklesIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { AiModelsComboBox } from "./ai-models-combo-box";
 import { models } from "@/constants";
@@ -261,24 +261,37 @@ export function PromptInputWithActions({
             )}
           </PromptInputAction>
         </div>
-
-        <PromptInputAction
-          tooltip={isLoading ? "Stop generation" : "Send message"}
-        >
-          <Button
-            variant="default"
-            size="icon"
-            className="h-8 w-8 rounded-full"
-            onClick={handleSubmit}
-            disabled={isUploading} // ✅ Disable while uploading
+        <div className="flex gap-x-2">
+          {/* <PromptInputAction
+            tooltip={isLoading ? "Stop generation" : "Send message"}
           >
-            {status === "streaming" || status === "submitted" ? (
-              <Square className="size-5 fill-current" />
-            ) : (
-              <ArrowUp className="size-5" />
-            )}
-          </Button>
-        </PromptInputAction>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSubmit}
+              disabled={isUploading} // ✅ Disable while uploading
+            >
+              <SparklesIcon />
+            </Button>
+          </PromptInputAction> */}
+          <PromptInputAction
+            tooltip={isLoading ? "Stop generation" : "Send message"}
+          >
+            <Button
+              variant="default"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              onClick={handleSubmit}
+              disabled={isUploading} // ✅ Disable while uploading
+            >
+              {status === "streaming" || status === "submitted" ? (
+                <Square className="size-5 fill-current" />
+              ) : (
+                <ArrowUp className="size-5" />
+              )}
+            </Button>
+          </PromptInputAction>
+        </div>
       </PromptInputActions>
     </PromptInput>
   );
