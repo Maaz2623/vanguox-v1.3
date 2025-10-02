@@ -46,6 +46,7 @@ export async function POST(req: Request) {
         chunking: "word",
         delayInMs: 25,
       }),
+      maxRetries: 2,
       tools: {
         webSearcher,
         imageGenerator: imageGenerator(model),

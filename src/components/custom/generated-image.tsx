@@ -23,7 +23,7 @@ export const GeneratedImage = ({ src, alt, className }: Props) => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = alt || "download"; // fallback filename
+      a.download = alt || "download";
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -35,44 +35,45 @@ export const GeneratedImage = ({ src, alt, className }: Props) => {
   };
 
   return (
-    <span
+    <div
       className={cn(
-        "inline-block relative rounded-lg my-3 cursor-pointer",
+        "relative w-full aspect-[4/5] rounded-lg overflow-hidden cursor-pointer", // 🔹 fixed ratio container
         className
       )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {/* Loader */}
       {loading && (
-        <span className="flex items-center justify-center w-[350px] h-[250px] bg-muted rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-muted">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-        </span>
+        </div>
       )}
 
+      {/* Image */}
       <img
         src={src}
         alt={alt ?? ""}
-        className={`rounded-lg shadow-none border object-contain transition-opacity duration-300 ${
-          loading ? "opacity-0 absolute" : "opacity-100 relative"
-        }`}
-        width={350}
-        height={250}
+        className={cn(
+          "w-full h-full object-cover transition-opacity duration-300", // 🔹 fills container evenly
+          loading ? "opacity-0" : "opacity-100"
+        )}
         onLoad={() => setLoading(false)}
       />
 
-      {/* 🔹 Hover overlay */}
+      {/* Hover overlay */}
       {!loading && hovered && (
-        <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/50 to-transparent rounded-t-lg">
+        <div className="absolute inset-0 bg-black/40 flex justify-end p-2">
           <Button
             onClick={handleDownload}
-            className="absolute text-white top-2 right-2 rounded-full"
+            className="text-white rounded-full"
             variant="ghost"
             size="icon"
           >
             <DownloadIcon />
           </Button>
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   );
 };

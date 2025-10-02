@@ -82,7 +82,7 @@ export const imageGenerator = (modelId: string) =>
         }
 
         const result = await generateText({
-          model: google("gemini-2.0-flash-exp"),
+          model: google("gemini-2.5-flash-exp"),
           providerOptions: {
             google: { responseModalities: ["IMAGE", "TEXT"] },
           },
