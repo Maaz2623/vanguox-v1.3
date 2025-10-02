@@ -25,6 +25,7 @@ import { CheckIcon, CopyIcon, FileIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   chatId: string;
@@ -47,6 +48,13 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
 
   const { messages, sendMessage, regenerate, status, error } = useChat({
     messages: previousMessages,
+    onError: (error) => {
+      if (error.message.startsWith("Token limit")) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong. Try again later.");
+      }
+    },
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   });
 
@@ -278,11 +286,11 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                               }
                           }
                         })}
-                        {error && (
+                        {/* {error && (
                           <p className="text-muted-foreground">
                             {JSON.parse(error.message)}
                           </p>
-                        )}
+                        )} */}
                       </MessageContent>
                     </Message>
                   </div>
