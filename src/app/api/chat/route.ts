@@ -34,8 +34,9 @@ export async function POST(req: Request) {
   const exceeded = await usageExceeded(authData.user.id);
 
   if (exceeded) {
-    return NextResponse.json("Token limit exceeded.", {
+    return new NextResponse(JSON.stringify({ error: "Token limit exceeded" }), {
       status: 403,
+      headers: { "Content-Type": "application/json" },
     });
   } else {
     const result = streamText({

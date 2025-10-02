@@ -70,6 +70,8 @@ export function ChatViewNavSecondary({
 
   const progressValue = (totalTokens / maxTokens) * 100;
 
+  const usageExceeded = totalTokens >= maxTokens;
+
   return (
     <>
       <PlansDialog open={plansDialogOpen} setOpen={setPlansDialogOpen} />
@@ -150,10 +152,13 @@ export function ChatViewNavSecondary({
                     {!currentSubscription && (
                       <Button
                         size="sm"
-                        className="rounded-full"
+                        className="rounded-full relative"
                         variant="outline"
                         onClick={() => setPlansDialogOpen(true)}
                       >
+                        {usageExceeded && (
+                          <span className="h-2 w-2 shrink-0 animate-pulse absolute top-0 right-0 bg-blue-500 rounded-full"></span>
+                        )}
                         <CrownIcon className="h-4 w-4" />
                         Upgrade
                       </Button>

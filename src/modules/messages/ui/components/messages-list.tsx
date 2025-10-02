@@ -286,11 +286,6 @@ export const MessagesList = ({ chatId, previousMessages }: Props) => {
                               }
                           }
                         })}
-                        {/* {error && (
-                          <p className="text-muted-foreground">
-                            {JSON.parse(error.message)}
-                          </p>
-                        )} */}
                       </MessageContent>
                     </Message>
                   </div>
