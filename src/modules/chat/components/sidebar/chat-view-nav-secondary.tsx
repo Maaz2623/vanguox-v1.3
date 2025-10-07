@@ -56,13 +56,15 @@ export function ChatViewNavSecondary({
 
   const dateToShow = currentSubscription?.billingCycleEnd
     ? new Date(currentSubscription.billingCycleEnd)
-    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Adding 30 days
+    : null; // Adding 30 days
 
-  const formattedDate = dateToShow.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const formattedDate =
+    dateToShow &&
+    dateToShow.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
 
   if (isLoading) {
     return;
@@ -182,10 +184,11 @@ export function ChatViewNavSecondary({
                   </div>
 
                   {/* Ends At (only for Pro) */}
-
-                  <p className="text-xs text-muted-foreground">
-                    Ends at {formattedDate}
-                  </p>
+                  {formattedDate && (
+                    <p className="text-xs text-muted-foreground">
+                      Ends at {formattedDate}
+                    </p>
+                  )}
                 </div>
               )}
             </SidebarMenuItem>
