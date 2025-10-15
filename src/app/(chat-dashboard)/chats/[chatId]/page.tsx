@@ -1,12 +1,18 @@
 import { ChatView } from "@/modules/chat/views/chat-view";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { UIMessage } from "ai";
+import { Metadata } from "next";
 
 interface Props {
   params: Promise<{
     chatId: string;
   }>;
 }
+
+export const metadata: Metadata = {
+  title: "Chat | Vanguox",
+  description: "Start chatting",
+};
 
 const ChatIdPage = async ({ params }: Props) => {
   const { chatId } = await params;
