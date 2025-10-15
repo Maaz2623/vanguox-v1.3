@@ -1,4 +1,5 @@
 import { FilesView } from "@/modules/files/ui/views/files-view";
+import { Metadata } from "next";
 import React from "react";
 
 
