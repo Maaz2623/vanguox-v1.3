@@ -4,19 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY!,
-  authDomain: "vanguox-702bb.firebaseapp.com",
-  projectId: "vanguox-702bb",
-  storageBucket: "vanguox-702bb.firebasestorage.app",
-  messagingSenderId: "416425412193",
-  appId: "1:416425412193:web:580636abe0b457c3a7cc20",
-  measurementId: "G-RZ58VKHV31",
-};
-
+import { FirebaseAnalytics } from "@/components/firebase-analytics";
 export const metadata: Metadata = {
   title: "Vanguox - All-in-One AI Platform for all your tasks",
   description: "All your AI models at one place.",
@@ -53,9 +41,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${cairo.className} antialiased`}>
@@ -66,6 +51,7 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <FirebaseAnalytics /> {/* ✅ Client-side only */}
             <Toaster />
             {children}
           </ThemeProvider>
